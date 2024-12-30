@@ -1,14 +1,13 @@
 from aiogram import F, Router
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, CommandStart
 from keyboards.base_kb import base_kb
 from lexicon.base_commands_enum import BaseCommandsEnum
 from lexicon.buttons_enum import ButtonsEnum
-import state.status_class as status_class
 from aiogram.fsm.context import FSMContext
 from state.status_class import Form
 from database.create_base import session, Item, CartItem
-
+from keyboards.inline_kb import create_inline_kb, ProductsCallbackFactory
 import prettytable as pt
 
 
@@ -77,30 +76,54 @@ async def process_help_button(message: Message):
 #     )
 
 
+# @router.message(F.text == ButtonsEnum.catalog.value)
+# async def process_catalog_button(message: Message):
+#     """
+#     Этот хэндлер срабатывает на кнопку 'Показать каталог товаров' - таблица
+#     """
+#     table = pt.PrettyTable(['Товар', 'Цена'])
+#     table.align['Товар'] = 'l'
+#     table.align['Цена'] = 'r'
+#
+#     items = session.query(Item).all()
+#     data = []
+#     if items:
+#         for item in items:
+#             data.append((item.name, item.price))
+#
+#         for symbol, price in data:
+#             table.add_row([symbol, f'{price:.2f} RUB'])
+#     else:
+#         table = pt.PrettyTable(['Товар', 'Цена'])
+#
+#     await message.answer(
+#         text=f'Каталог товаров\n'
+#         f'<pre>{table}</pre>\n'
+#         f'Введите название товара, чтобы добавить его в корзину',
+#         reply_markup=base_kb
+#     )
+
 @router.message(F.text == ButtonsEnum.catalog.value)
 async def process_catalog_button(message: Message):
     """
     Этот хэндлер срабатывает на кнопку 'Показать каталог товаров'
     """
-    table = pt.PrettyTable(['Товар', 'Цена'])
-    table.align['Товар'] = 'l'
-    table.align['Цена'] = 'r'
-
-    items = session.query(Item).all()
-    data = []
-    if items:
-        for item in items:
-            data.append((item.name, item.price))
-
-        for symbol, price in data:
-            table.add_row([symbol, f'{price:.2f} RUB'])
-    else:
-        table = pt.PrettyTable(['Товар', 'Цена'])
-
     await message.answer(
-        text=f'Каталог товаров\n<pre>{table}</pre>\nВведите название товара, чтобы добавить его в корзину', parse_mode='HTML',
-        reply_markup=base_kb
+        text='Выбери товар',
+        reply_markup=await create_inline_kb(width=1)
     )
+
+
+@router.callback_query(ProductsCallbackFactory.filter())
+async def inline_button_press(
+    callback: CallbackQuery,
+    callback_data: ProductsCallbackFactory
+):
+    """
+    Этот хэндлер срабатывает на нажатия любой инлайн кнопки
+    """
+    await callback.message.answer(text=f'Ты выбрал {callback_data.product_name}')
+    await callback.answer()
 
 
 @router.message(F.text == ButtonsEnum.add_to_cart.value)
