@@ -30,7 +30,7 @@ async def main():
     # Загружаем конфиг в переменную config
     config: Config = load_config()
 
-    initialize_database()
+    await initialize_database()
 
     bot = Bot(
         token=config.tg_bot.token,
