@@ -31,7 +31,7 @@ button_checkout: KeyboardButton = KeyboardButton(
 
 
 # Инициализируем билдер для клавиатуры с кнопками:
-base_kb_builder = ReplyKeyboardBuilder()
+base_kb_builder: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
 
 # Добавляем кнопки в билдер с аргументом width=1 (количество кнопок в ряду)
 base_kb_builder.row(
@@ -41,11 +41,10 @@ base_kb_builder.row(
     button_add_to_cart,
     button_cart,
     button_checkout,
-    width=1
+    width=2
 )
 
 # Создаем клавиатуру с кнопками:
 base_kb: ReplyKeyboardMarkup = base_kb_builder.as_markup(
-    # one_time_keyboard=True,
     resize_keyboard=True
 )
