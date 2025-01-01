@@ -7,7 +7,7 @@ from lexicon.buttons_enum import ButtonsEnum
 from aiogram.fsm.context import FSMContext
 from state.status_class import Form
 from database.create_base import session, Item, CartItem
-from keyboards.inline_kb import create_inline_kb, ProductsCallbackFactory
+from keyboards.inline_kb import ProductsCallbackFactory, create_products_inline_kb, create_bunner_types_inline_kb, create_tarpaulin_densities_inline_kb
 import prettytable as pt
 
 
@@ -110,20 +110,43 @@ async def process_catalog_button(message: Message):
     """
     await message.answer(
         text='Выбери товар',
-        reply_markup=await create_inline_kb(width=1)
+        reply_markup=await create_products_inline_kb(width=1)
     )
 
 
 @router.callback_query(ProductsCallbackFactory.filter())
-async def inline_button_press(
+async def inline_banner_button_press(
     callback: CallbackQuery,
     callback_data: ProductsCallbackFactory
 ):
     """
-    Этот хэндлер срабатывает на нажатия любой инлайн кнопки
+    Этот хэндлер срабатывает на выбор продукта
     """
-    await callback.message.answer(text=f'Ты выбрал {callback_data.product_name}')
-    await callback.answer()
+    if callback_data.product_name == 'Баннера':
+        await callback.message.answer(
+            text=f'Выбери качество баннера',
+            reply_markup=await create_bunner_types_inline_kb()
+        )
+        await callback.answer()
+
+    elif callback_data.product_name == 'Тарпаулин':
+        await callback.message.answer(
+            text=f'Выбери плотность Тарпаулина',
+            reply_markup=await create_tarpaulin_densities_inline_kb()
+        )
+        await callback.answer()
+
+    elif callback_data.product_name == 'Маскировочная сеть':
+        await callback.message.answer(
+            text=f'Еще делаю'
+        )
+        await callback.answer(text='Еще в работе')
+
+    else:
+        await callback.message.answer(
+            text=f'Что-то пошло не так'
+        )
+        await callback.answer()
 
 
 @router.message(F.text == ButtonsEnum.add_to_cart.value)
