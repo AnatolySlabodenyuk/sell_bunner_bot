@@ -18,12 +18,15 @@ class Config:
 
 
 def load_config(path: str | None = None) -> Config:
+    """
+    Функция для настройки конфига 
+    """
     env: Env = Env()
     env.read_env(path)
     return Config(
         tg_bot=TgBot(
-            token=env("TELEGRAM_TOKEN"),
-            payment_provider_token=env("PAYMENT_PROVIDER_TOKEN"),
-            database_url=env("DATABASE_URL")
+            token=env('TELEGRAM_TOKEN'),
+            payment_provider_token=env('PAYMENT_PROVIDER_TOKEN'),
+            database_url=env('DATABASE_URL')
         )
     )

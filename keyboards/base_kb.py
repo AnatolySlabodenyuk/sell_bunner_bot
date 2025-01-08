@@ -8,7 +8,6 @@ button_restart: KeyboardButton = KeyboardButton(
     text=ButtonsEnum.restart.value
 )
 
-
 button_help: KeyboardButton = KeyboardButton(
     text=ButtonsEnum.help.value
 )
@@ -28,7 +27,6 @@ button_cart: KeyboardButton = KeyboardButton(
 button_checkout: KeyboardButton = KeyboardButton(
     text=ButtonsEnum.checkout.value
 )
-
 
 # Инициализируем билдер для клавиатуры с кнопками:
 base_kb_builder: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
