@@ -10,8 +10,8 @@ from aiogram.client.default import DefaultBotProperties
 # from telegram.ext import Application, CommandHandler, MessageHandler, filters, PreCheckoutQueryHandler, ContextTypes
 
 from config_data.config import Config, load_config
-from database.create_base import session, Item, CartItem, initialize_database
-
+from database.example_table import initialize_example_database
+from database.tables import initialize_products_table
 from handlers import user_handlers
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,8 @@ async def main():
     # Загружаем конфиг в переменную config
     config: Config = load_config()
 
-    await initialize_database()
+    await initialize_example_database()
+    await initialize_products_table()
 
     bot = Bot(
         token=config.tg_bot.token,
